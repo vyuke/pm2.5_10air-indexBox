@@ -1,0 +1,74 @@
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+#include <SPI.h>
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+
+int i;
+int a[10] = {};
+boolean stringComplete = false;
+
+void setup()
+{
+  Serial.begin(9600);
+  Serial1.begin(9600);
+  delay(100);
+  lcd.init();
+  lcd.backlight();
+  lcd.setCursor(5, 0);
+  lcd.print("Boot...");
+  lcd.setCursor(0, 1);
+  for (int i = 0; i < 16; i++)
+  {
+    lcd.write(0xff);
+    delay(100);
+  }
+  lcd.init();
+  lcd.setCursor(0, 0);
+  lcd.print("Air PM2.5 index");
+  lcd.setCursor(10, 1);
+  lcd.print("ug/m^3");
+
+//  lcd.setCursor(0, 1);
+//  lcd.print("PM10.0=");
+//  lcd.setCursor(7, 1);
+//  lcd.print("ug/m^3");
+
+}
+
+void loop() {
+  while (Serial1.available() >= 10)
+  {
+    if (Serial1.read() == 0xAA)
+    { a[0] = 0xAA;
+      for (i = 1; i <= 9; i++)
+      {
+        a[i] = Serial1.read();
+      }
+      ///////////
+      float pm25val = (a[3] * 256 + a[2]) / 10.0;
+      float pm10val = (a[5] * 256 + a[4]) / 10.0;
+      /////////////sourcevalue
+      for (int c = 0; c <= 9; c++)
+      {
+        Serial.print(a[c], HEX);
+        Serial.print(' ');
+      }
+      ///////////////pm2.5
+      Serial.print(" PM2.5 =");
+      Serial.print(pm25val);
+      Serial.print("ug/m3");
+      ///////////////pm10
+      Serial.print(" PM10 =");
+      Serial.print(pm10val);
+      Serial.print("ug/m3");
+      Serial.println("");
+      //Serial.print(a[0],HEX);
+      //Serial.println(a[1],HEX);
+      ///////////////lcePrint
+      lcd.setCursor(0, 1);
+      lcd.print(pm25val);
+     
+    }
+  }
+
+}
