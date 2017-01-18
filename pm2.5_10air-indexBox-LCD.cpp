@@ -1,7 +1,19 @@
+#include <Arduino.h>
 #include <Wire.h>
+
+ //#define LCD_I2C
+ //#define OLED_I2C
+
+#ifdef LCD_I2C
 #include <LiquidCrystal_I2C.h>
 #include <SPI.h>
 LiquidCrystal_I2C lcd(0x27, 16, 2);
+#endif
+
+#ifdef OLED_I2C
+#include <U8g2lib.h>
+U8G2_SSD1306_128X64_NONAME_F_SW_I2C u8g2(U8G2_R0, /* clock=*/ SCL, /* data=*/ SDA, /* reset=*/ 8);
+#endif
 
 int i;
 int a[10] = {};
@@ -12,6 +24,13 @@ void setup()
   Serial.begin(9600);
   Serial1.begin(9600);
   delay(100);
+  ///////////////////////////////////
+#ifdef OLED_I2C
+  u8g2.begin();
+#endif
+
+  //////////////////////////////////
+#ifdef LCD_I2C
   lcd.init();
   lcd.backlight();
   lcd.setCursor(5, 0);
@@ -20,7 +39,7 @@ void setup()
   for (int i = 0; i < 16; i++)
   {
     lcd.write(0xff);
-    delay(100);
+    delay(80);
   }
   lcd.init();
   lcd.setCursor(0, 0);
@@ -28,11 +47,12 @@ void setup()
   lcd.setCursor(10, 1);
   lcd.print("ug/m^3");
 
-//  lcd.setCursor(0, 1);
-//  lcd.print("PM10.0=");
-//  lcd.setCursor(7, 1);
-//  lcd.print("ug/m^3");
-
+  //  lcd.setCursor(0, 1);
+  //  lcd.print("PM10.0=");
+  //  lcd.setCursor(7, 1);
+  //  lcd.print("ug/m^3");
+#endif
+  ///////////////////////////////////
 }
 
 void loop() {
@@ -64,10 +84,20 @@ void loop() {
       Serial.println("");
       //Serial.print(a[0],HEX);
       //Serial.println(a[1],HEX);
+      
       ///////////////lcePrint
+#ifdef LCD_I2C
       lcd.setCursor(0, 1);
       lcd.print(pm25val);
-     
+#endif
+      ///////////////OLEDprint
+#ifdef OLED_I2C
+      u8g2.clearBuffer();          // clear the internal memory
+      u8g2.setFont(u8g2_font_ncenB14_tr); // choose a suitable font
+      u8g2.drawStr(0, 20, "pm25val"); // write something to the internal memory
+      u8g2.sendBuffer();          // transfer internal memory to the display
+      delay(1000);
+#endif
     }
   }
 
