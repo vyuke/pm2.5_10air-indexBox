@@ -183,7 +183,7 @@ void setup()
   ///////////////////////
   u8g2.drawStr(3, 16, "PM2.5");
   u8g2.drawStr(69, 16, "PM10");
-
+  u8g2.drawStr(40,62,"ug/m^3");
   u8g2.sendBuffer();
 #endif
 
