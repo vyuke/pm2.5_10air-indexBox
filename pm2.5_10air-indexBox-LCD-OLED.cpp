@@ -100,6 +100,7 @@ void setup()
   u8g2.sendBuffer();
   delay(3000);
   u8g2.clearBuffer();
+  //u8g2.clearBuffer();
   ////////////////////////print_mostfun_logo//与intel_logo同时加入setup后101无响应
   //
   //  const unsigned char mostfun_logo[] = {
@@ -183,7 +184,7 @@ void setup()
   ///////////////////////
   u8g2.drawStr(3, 16, "PM2.5");
   u8g2.drawStr(69, 16, "PM10");
-  u8g2.drawStr(40,62,"ug/m^3");
+  u8g2.drawStr(33, 55, "ug/m^3");
   u8g2.sendBuffer();
 #endif
 
@@ -251,13 +252,32 @@ void loop() {
 
       ///////////////OLEDprint_data
 #ifdef OLED_I2C
+      //u8g2.clearBuffer();
+      //////////////////////////
+//      u8g2.drawFrame(0, 0, 128, 64);
+//      u8g2.drawVLine(64, 0, 34);
+//      u8g2.drawHLine(0, 17, 128);
+//      u8g2.drawHLine(0, 34, 128);
+//      u8g2.setFont(u8g2_font_ncenB14_tr);
+//      ///////////////////////
+//      u8g2.drawStr(3, 16, "PM2.5");
+//      u8g2.drawStr(69, 16, "PM10");
+//      u8g2.drawStr(33, 55, "ug/m^3");
+//      u8g2.sendBuffer();
+      /////////////////////////////
       u8g2.setFont(u8g2_font_ncenB14_tr);
+      
+      u8g2.setCursor(8, 33);
+      u8g2.print("     ");
       u8g2.setCursor(8, 33);
       u8g2.print(pm25val, 1);
       u8g2.sendBuffer();
       u8g2.setCursor(71, 33);
+      u8g2.print("     ");
+       u8g2.setCursor(71, 33);
       u8g2.print(pm10val, 1);
       u8g2.sendBuffer();
+      //delay(5000);
       u8g2.setFont(u8g2_font_ncenB14_tr);
       ///////////////////////
 
